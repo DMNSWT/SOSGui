@@ -2,6 +2,9 @@ SOSGui
 ======
 Partially funded by NASA grant.  Initially developed at Denver Museum of Nature & Science (DMNS) with work provided by independant contractor Andrew Strickland as an open-source project for the SOS community.  DMNS does not provide any support for this product and encourages community development to grow its capabilities as Science on a Sphere evolves.
 
+Intention of this product is to provide a platform independent solution for control, allow easy modification for sites, allow site-specific management of the NOAA SOS catalog (custom keywords, organization, user management, etc.), allow for multi-lingual versions and to stay up with current and cutting edge web technologies.
+
+
 Technologies used - see list-o-tech.md
 
 Installation dependencies:
