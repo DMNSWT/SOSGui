@@ -39,7 +39,6 @@ NOTE:
 - "library" locations can be modified if playlist.sos files are stored elsewhere
 - "playlistFsLocation" location can be different.  You should manually make this directory location.
 - "fsLocation" location can be different.  You should manually make this directory location.
-- 
 
 After that run:
 
