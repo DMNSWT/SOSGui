@@ -50,5 +50,5 @@ After that run at the command-line (as SOS):
     node index.js
 
 To access, use any browser (tested with Chrome):    
-- Presenter GUI: "http://<sos-computer>:3500"
-- CMS GUI: "http://<sos-computer>:3510"
+- Presenter GUI: http://sos-computer:3500
+- CMS GUI: http://sos-computer:3510
