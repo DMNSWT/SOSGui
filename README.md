@@ -11,8 +11,8 @@ Technologies used - see list-o-tech.md
 
 Installation dependencies:
 - must have Node 10 with NPM (see http://nodejs.org/download/)
-- once this is cloned to SOS computer (as SOS user), go into science-on-sphere directory and run: npm install
-- create in science-on-sphere directory a config.json file using the following as an example:
+- once this is cloned to SOS computer (as SOS user), go into SOSGui directory and run: npm install
+- create in SOSGui directory a config.json file using the following as an example:
  {
         "sosTelnet":{
             "host": "127.0.0.1",
