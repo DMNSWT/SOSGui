@@ -1,0 +1,66 @@
+{% extends 'cms-layout.html' %}
+
+{% block content %}
+<script>
+	function DatasetsCtrl($scope, $http){
+		$scope.datasetSubmit = function(){}
+		$scope.datasetsGrid = {
+			cols:[
+				{
+					name: "Dataset Name",
+					property: "name"
+				},
+				{
+					name: "Tags",
+					type: 'template',
+					template: '{{ row.tags.join(", ") }}'
+				},
+				{
+					name: "File",
+					property: "fsLoc"
+				}
+			],
+			rows:[]
+		};
+		$scope.$on('rowSelected', function(evt, row){
+			console.log(row);
+			$scope.currentDataset = row;
+		});
+		$http({method: 'GET', url: '/api/datasets'})
+		.success(function(data) {
+			$scope.datasetsGrid.rows = data;
+		}).error(handleError);
+		$scope.currentDataset = {};
+
+		$scope.updateCurrent = function(){
+			$scope.currentDataset.tags = $scope.currentDataset.tags.split(',');
+			$http({method: 'PUT', url:'/api/datasets/byId/' + $scope.currentDataset._id, data: $scope.currentDataset}).		
+			success(function(data){
+				console.log('done', data);
+			});
+		}
+	}
+</script>
+<h1>Clips</h1>
+<div class="row" ng-controller="DatasetsCtrl">
+	<div class="col-sm-7">
+		<div class="table-responsive">
+			<grid grid-data="datasetsGrid"></grid>
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<form ng-submit="updateCurrent()">
+			<div class="form-group">
+				<label>Clip Name:</label>
+				<input class="form-control" type="text" name="clip-name" ng-model="currentDataset.name" />
+			</div>
+		
+			<div class="form-group">
+				<label>Tags (comma seperated):</label>
+				<input class="form-control" type="text" name="tags" ng-model="currentDataset.tags" />
+			</div>
+			<button type="submit" class="btn btn-primary">{{ currentDataset._id? 'Update Clip' : 'Create Clip' }}</button>
+		</form>
+	</div>
+</div>
+{% endblock %}

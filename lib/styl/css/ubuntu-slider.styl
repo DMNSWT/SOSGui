@@ -1,0 +1,37 @@
+.slider-control
+	display block
+	height 48px
+	width 100%
+	position relative
+	no-select()
+	.slider-bar
+	.slider-highlight
+		background rgba(0,0,0,0.3)
+		height 6px
+		fitToMargin()
+		margin 21px 1px
+		border solid 1px darken(white, 50%)
+	.slider-highlight
+		width 0%
+		background rgba(255,255,255,0.55)
+	.slider-knob
+		cursor move
+		background orange
+		border solid 2px white
+		width 24px
+		height 24px
+		border-radius 50%
+		absolute top 10px left 0px
+	&.slider-control-vertical
+		width 48px
+		height 100%
+		.slider-bar
+		.slider-highlight
+			height 100%
+			width 6px
+			margin 1px 21px
+		.slider-highlight
+			width 6px
+			height 0px
+		.slider-knob
+			absolute top 0px left 10px

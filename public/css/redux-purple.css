@@ -1,0 +1,11 @@
+a{color:#a13ac7}
+header{border-bottom:solid 2px #a13ac7}
+footer a:hover,footer a:active,footer a.current{border-top:solid 4px #a13ac7}
+footer a:hover{-webkit-box-shadow:0 0 13px #a13ac7;box-shadow:0 0 13px #a13ac7}
+#media-controls{border:solid 2px #a13ac7}
+.big-list li ul{border-left:solid 5px #a13ac7}
+.big-list li a{color:#a13ac7;}
+.big-list li a .indicator{color:#a13ac7}
+#media-controls #control-play,#media-controls #control-pause{color:#a13ac7}
+.slider-control .slider-highlight{background:-webkit-gradient(linear, left top, left bottom, color-stop(0, #a13ac7), color-stop(1, #792b96));background:-webkit-linear-gradient(top, #a13ac7 0%, #792b96 100%);background:-moz-linear-gradient(top, #a13ac7 0%, #792b96 100%);background:-o-linear-gradient(top, #a13ac7 0%, #792b96 100%);background:-ms-linear-gradient(top, #a13ac7 0%, #792b96 100%);background:linear-gradient(top, #a13ac7 0%, #792b96 100%);border-color:#c27fdb}
+.slider-control .slider-knob{border:solid 2px #a13ac7;-webkit-box-shadow:0 0 5px #000,inset 0 0 48px #a13ac7;box-shadow:0 0 5px #000,inset 0 0 48px #a13ac7}

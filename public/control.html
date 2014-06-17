@@ -1,0 +1,234 @@
+<!DOCTYPE html >
+<html>
+	<head>
+		<title>SOS Control Page</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/css/themes/Vicious-Delicious.min.css" />
+		<link rel="stylesheet" href="/css/jquery.mobile.structure-1.1.0-rc.1.min.css" />
+		<script src="/js/3js/Three.js"></script>
+		<script src="/js/jquery.js"></script>
+		<script src="/js/jquery.mobile-1.1.0-rc.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socket = io.connect();
+			$(document).delegate('#playlists', 'pageinit', function(){
+				$('a[href^="#play-"]').click(function(){
+					var playID = $(this).attr('href').replace('#play-','');
+					$.mobile.changePage( $('#globe-control') );
+					return false;
+				});
+			}).delegate('#globe-control', 'pageinit', function() {
+				var $t = $(this);
+				var tSize = { w: $t.width(), h: $t.height() };
+				var globeCT = $('#globe-target');
+				var scene = new THREE.Scene();
+				var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+				var renderer = new THREE.CanvasRenderer();
+				
+				function degsTo3jsRot(d){
+					return (d/360)*Math.PI;
+				}
+				
+				function tjsRotToDegrees(r){
+					return Math.round((r/Math.PI)*360);
+				}
+				
+				
+				camera.position.z = 523;
+				camera.position.y = 150;
+				camera.rotation.z = degsTo3jsRot(23.25);
+				scene.add( camera );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				// add BG glow mesh
+				mesh = new THREE.Mesh(
+					new THREE.PlaneGeometry( 750, 750, 1, 1 ),
+					new THREE.MeshBasicMaterial({
+						map: THREE.ImageUtils.loadTexture( '/img/textures/glow.png' )
+					})
+				);
+				mesh.rotation.x = degsTo3jsRot(-15);;
+				mesh.position.z = -250;
+				mesh.position.y = -115;
+				//mesh.rotation.x = - 90 * Math.PI / 180;
+				scene.add( mesh );
+				// add globe
+				var mesh = new THREE.Mesh(
+					new THREE.SphereGeometry( 200, 24, 24 ),
+					new THREE.MeshBasicMaterial({
+						map: THREE.ImageUtils.loadTexture( '/img/textures/land_ocean_ice_cloud_2048.jpg' ),
+						overdraw: true
+					})
+				);
+				scene.add( mesh );
+				globeCT.append( renderer.domElement );
+				
+				function animate() {
+					requestAnimationFrame( animate );
+					render();
+				}
+				function render() {
+					camera.lookAt( scene.position );
+					renderer.render( scene, camera );
+				}
+				animate();
+				
+				globeCT.mousedown(function(event){
+					var start = {x: event.clientX, y: event.clientY};
+					var rotOffset = {
+						x: mesh.rotation.x,
+						y: mesh.rotation.y
+					};
+					globeCT.on('mousemove', function(evt){
+						var relOffset = {
+							x: evt.clientX - start.x,
+							y: evt.clientY - start.y 
+						}
+						var rotationAxis = 'y';
+						var rotationRatio = relOffset.x / tSize.w;
+						if(Math.abs(relOffset.y) > Math.abs(relOffset.x)){
+							rotationAxis = 'x';
+							rotationRatio = relOffset.y / tSize.h;
+						}
+						var degrees = Math.round(rotationRatio*360)*2;
+						var newRotation = degsTo3jsRot(degrees) + rotOffset[rotationAxis]
+						mesh.rotation[rotationAxis] = newRotation;
+						socket.emit('orientGlobe', {r: mesh.rotation});
+					});
+				}).mouseup(function(){
+					globeCT.off('mousemove');
+				});
+			});
+			var initializeDoc = function(){
+				$.mobile.touchOverflowEnabled = true;
+			}
+			$(document).bind("mobileinit", initializeDoc).ready(initializeDoc);
+			$.mobile.defaultPageTransition = 'turn';
+		</script>
+		<style>
+			#globe-control{
+				cursor: move;
+				position: relative;
+				width: 100%;
+				height: 100%;
+			}
+			#globe-control .ui-content{
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
+	</head>
+	<body style="background: #000;">
+		<div data-role="page" data-theme="a" id="globe-control">
+
+			<div data-role="content">	
+				<div id="globe-target"></div>		
+			</div><!-- /content -->
+
+			<div id="footer-nav" data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#globe-control" class="ui-btn-active ui-state-persist">Control</a></li>
+						<li><a href="#playlists">Playlist</a></li>
+						<li><a href="#settings" data-transition="slideup">Settings</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /footer -->
+		</div><!-- /page -->
+		
+		<div data-role="page" data-theme="a" id="playlists">
+
+			<div data-role="content">	
+				<ul data-role="listview" data-theme="g">
+					<li><a href="#play-1">
+						<img src="http://placehold.it/80x80" />
+						<h3>Broken Bells</h3>
+						<p>Broken Bells</p>
+					</a></li>
+					<li><a href="#play-2">
+						<img src="http://placehold.it/80x80" />
+						<h3>Warning</h3>
+						<p>Hot Chip</p>
+					</a></li>
+					<li><a href="#play-3">
+						<img src="http://placehold.it/80x80" />
+						<h3>Wolfgang Amadeus Phoenix</h3>
+						<p>Phoenix</p>
+					</a></li>
+					<li><a href="#play-4">
+						<img src="http://placehold.it/80x80" />
+						<h3>Of The Blue Colour Of The Sky</h3>
+						<p>Ok Go</p>
+					</a></li>
+					<li><a href="#play-5">
+						<img src="http://placehold.it/80x80" />
+						<h3>Elephant</h3>
+						<p>The White Stripes</p>
+					</a></li>
+					<li><a href="#play-6">
+						<img src="http://placehold.it/80x80" />
+						<h3>Kid A</h3>
+						<p>Radiohead</p>
+					</a></li>
+					<li><a href="#play-7">
+						<img src="http://placehold.it/80x80" />
+						<h3>XX</h3>
+						<p>XX</p>
+					</a></li>
+					<li><a href="#play-8">
+						<img src="http://placehold.it/80x80" />
+						<h3>Congratulations</h3>
+						<p>MGMT</p>
+					</a></li>
+					
+					<li><a href="#play-9">
+						<img src="http://placehold.it/80x80" />
+						<h3>Ashes Grammar</h3>
+						<p>A Sunny Day in Glasgow</p>
+					</a></li>
+					
+					<li><a href="#play-10">
+						<img src="http://placehold.it/80x80" />
+						<h3>Hot Fuss</h3>
+						<p>Killers</p>
+					</a></li>
+					<li><a href="#play-11">	
+						<img src="http://placehold.it/80x80" />
+						<h3>The Suburbs</h3>
+						<p>Arcade Fire</p>
+					</a></li>
+				</ul>	
+			</div><!-- /content -->
+
+			<div id="footer-nav" data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#globe-control">Control</a></li>
+						<li><a href="#playlists" class="ui-btn-active ui-state-persist">Playlist</a></li>
+						<li><a href="#settings" data-transition="slideup">Settings</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /footer -->
+		</div><!-- /page -->
+		
+		<div data-role="page" data-theme="a" id="settings">
+			<div data-role="header">
+				<h1>Settings</h1>
+			</div><!-- /header -->
+
+			<div data-role="content">	
+				Settings go here		
+			</div><!-- /content -->
+
+			<div id="footer-nav" data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#globe-control" data-transition="slidedown">Control</a></li>
+						<li><a href="#playlists" data-transition="slidedown">Playlist</a></li>
+						<li><a href="#settings" data-transition="slideup" class="ui-btn-active ui-state-persist">Settings</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /footer -->
+		</div><!-- /page -->
+		
+	</body>
+</html>

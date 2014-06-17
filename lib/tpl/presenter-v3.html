@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Science on a Sphere - Presenter</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, width=device-width, user-scalable=no"/>
+		<link rel="stylesheet" href="/css/ubuntu-inspired.css" />
+		<link rel="stylesheet" href="/font/fontello/css/fontello.css" />
+		<script src="/js/thirdparty/head.min.js"></script>
+		<style>
+			.opac-slider-ct .slider-control .slider-knob{
+				left: 100%;
+			}
+		</style>
+		<script>
+			var socket;
+			head.feature('webgl', (function(){try{return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');}catch(e){return false;}})());
+			head.js(
+				{jquery: '/js/thirdparty/jquery.1.9.1.min.js'},
+				{jquerypp: '/js/thirdparty/jquerypp.drag-swipe.js'},
+				{slider: '/js/jq.slider.js'},
+				{socketIO: '/socket.io/socket.io.js'},
+				{canjs: '/js/thirdparty/can.jquery.min.js'},
+				{mediaControls: '/js/media-control.js'},
+				{threejs: '/js/thirdparty/three.min.js'},
+				{tjsSoftwareRenderer: '/js/thirdparty/3JS.SoftwareRenderer.js'},
+				{tjsTrackballControl: '/js/thirdparty/3JS.TrackballControls.js'},
+				{globe: '/js/globe.js'},
+				function(){
+					socket = io.connect();
+					$('a[href="#footer-up"], a[href="#footer-down"]').on('click', function(){
+						var $t = $(this);
+						if($t.is('[href="#footer-up"]')){
+							$('footer').slideDown('fast');
+							$('#footer-placeholder').slideUp('fast');
+						}
+						else{
+							$('footer').slideUp('fast');
+							$('#footer-placeholder').slideDown('fast');
+						}
+						return false;
+					});
+					$('a[href="#notes"]').on('click', function(){
+						$('#notes-ct').toggle('fast');
+					});
+					$('#z-rot-slider').val('50')
+					$('.slider').slider();
+					$('#n-rot-slider').val('50').slider();
+					$.get('/get-playlist-items', function(data){
+						var target = $('.big-list');
+						function makeLayerItems(arr){
+							var itemsOut = '';
+							for(var i=0, l=arr.length; i<l; i++){
+								var out = '';
+								var item = arr[i];
+								out += '<li>';
+								out += '<span class="layer-label">'+item+'</span>';
+								out += '<div class="on-off-indicator on"></div>';
+								out += '<div class="opac-slider-ct"><input type="hidden" class="opac-slider" value="100" /></div>'
+								out += '</li>';
+								itemsOut += out;
+							}
+							return itemsOut;
+						}
+						function makeNLI(arr){
+							var arrOut = new Array();
+							for(var i=0, l=arr.length; i<l; i++){
+								var out = '';
+								var item = arr[i];
+								out += '<li>';
+								out += '<a href="#!/play/' + item.id+'">';
+								out += '<span class="link-copy"><strong>'+item.title+'</strong>';
+								//out += '<span class="excerpt">'+item.desc+'</span>';
+								out += '</span>';
+								if(item.children){
+									out += '<span class="indicator icon-right-open-big"></span>';
+								}
+								out += '</a>';
+								if(item.children){
+									out += '<ul class="sub-list">'+ makeLayerItems(item.children) + '</ul>';
+								}
+								out += '</li>';
+								var el = $(out).data('clip',item);
+								arrOut.push(el);
+							}
+							return arrOut;
+						}
+						target.empty().append(makeNLI(data));
+						setTimeout(function(){
+							$('.opac-slider').slider();
+						}, 100);
+					});
+				});
+		</script>
+	</head>
+	<body>
+		<div id="ghost-rep"></div>
+		<div class="page-ct" id="globe-and-media-control">
+			<div id="left-nav-panel-target">
+				<select id="playlist-selector" name="playlist-loader">
+				<option>Default</option>
+				</select>
+				<ul class="collapsing-list big-list"></ul>
+			</div>
+			<div id="globe-target"></div>
+			<div id="n-rot-slider-ct">
+				<div id="n-rot-slider" class="slider-vertical"></div>
+			</div>
+			<div id="z-rot-slider-ct">
+				<div id="z-rot-slider" class="slider"></div>
+			</div>
+			
+			<a href="#" id="show-alignment">Align</a>
+			<div id="globe-control-overlay">
+				<div id="alignment-slider" class="slider"></div>
+			</div>
+		</div>
+		<div class="left-nav-present" id="notes-ct">
+			<div class="lnp-content-ct">
+				
+			</div>
+			<div class="pointer"></div>
+		</div>
+		<div id="footer-placeholder" class="glass">
+			<a href="#footer-up" class="btn"><i class="icon-up-open-big"></i></a>
+		</div>
+		<footer class="glass">
+			<!--
+			<a href="#footer-down" class="btn"><i class="icon-down-open-big"></i></a>
+		-->
+			<a href="#layers" class="btn"><i class="icon-list"></i></a>
+			<a href="#notes" class="btn"><i class="icon-comment"></i></a>
+			<a id="web-link-send-btn" href="#" class="btn"><i class="icon-mail-alt"></i></a>
+			<a target="_blank" id="web-link-btn" href="#" class="btn"><i class="icon-share"></i></a>
+			<div class="offset-to-right-side player-controls">
+				<a id="control-play" href="#!/media/play" class="btn btn-slim"><i class="icon-play"></i></a>
+				<a id="control-pause" href="#!/media/pause" class="btn btn-slim"><i class="icon-pause"></i></a>
+				<div id="play-scrubber">
+					<div class="slider"></div>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

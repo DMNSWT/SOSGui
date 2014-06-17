@@ -1,0 +1,42 @@
+{% extends 'cms-layout.html' %}
+
+{% block content %}
+<script>
+	function PlaylistCtrl($scope, $http){
+		$scope.playlistsGrid = {
+			cols:[
+				{
+					name: "Items",
+					type: 'template',
+					template: '{{ row.items.join(", ") }}'
+				},
+				{
+					name: "File",
+					property: "fsLoc"
+				}
+			],
+			rows:[]
+		};
+		$http({method: 'GET', url: '/api/playlists'})
+		.success(function(data) {
+			for(var i = 0, l = data.length; i<l; i++){
+				if(data[i].addedByScraper){
+					data[i].__classes = 'warning';
+				}
+			}
+			$scope.playlistsGrid.rows = data;
+		}).error(handleError);
+	}
+</script>
+<h1>Playlists</h1>
+<div class="row" ng-controller="PlaylistCtrl">
+	<div class="col-sm-7">
+		<div class="table-responsive">
+			<grid grid-data="playlistsGrid"></grid>
+		</div>
+	</div>
+	<div class="col-sm-5">
+		Edit Form
+	</div>
+</div>
+{% endblock %}

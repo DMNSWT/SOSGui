@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Science on a Sphere - Presenter</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="stylesheet" href="/css/redux.css" />
+		<link rel="stylesheet" id="color-shift" href="/css/redux-green.css" />
+		<link rel="stylesheet" href="/css/font-awesome.css" />
+		<script src="/js/thirdparty/head.min.js"></script>
+		<style>
+			#virtual-globe-target{
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="virtual-globe-target"></div>
+		<script>
+			head.feature('webgl', ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )());
+			head.js(
+				{jquery: '/js/thirdparty/jquery-1.8.2.min.js'},
+				{socketIO: '/socket.io/socket.io.js'},
+				{threeJS: '/js/thirdparty/three.min.js'},
+				function(){
+					socket = io.connect();
+					function degsTo3jsRot(d){ return (d/360)*Math.PI; }	
+					function tjsRotToDegrees(r){ return Math.round((r/Math.PI)*360); }
+					var $t          = $(this),
+						tSize       = { w: $t.width(), h: $t.height() },
+						globeCT     = $('#virtual-globe-target'),
+						scene       = new THREE.Scene(),
+						aspectRatio = window.innerWidth / (window.innerHeight),
+						camera      = new THREE.PerspectiveCamera( 60, aspectRatio, 1, 10000 ),
+						renderer    = new THREE.CanvasRenderer(),
+						sphereSegs  = 24;
+					if(head.webgl){
+						renderer    = new THREE.WebGLRenderer();
+						sphereSegs  = 64;
+					}
+					camera.position.z = 350;
+					camera.position.y = 150;
+					camera.rotation.z = degsTo3jsRot(23.25);
+					scene.add( camera );
+					renderer.setSize( window.innerWidth, window.innerHeight );
+					var mesh = new THREE.Mesh(
+						new THREE.SphereGeometry( 150, sphereSegs, sphereSegs ),
+						new THREE.MeshBasicMaterial({
+							map: THREE.ImageUtils.loadTexture( '/img/textures/land_ocean_ice_cloud_2048.jpg' ),
+							overdraw: true
+						})
+					);
+					scene.add( mesh );
+					globeCT.append(renderer.domElement);
+					function animate(){
+						requestAnimationFrame( animate );
+						render();
+					}
+					function render(){
+						adjustCamera();
+						renderer.render( scene, camera );
+					}
+					function adjustCamera(){
+						var w = window.innerWidth,
+							h = window.innerHeight,
+							isPortrait = h >= w;
+						renderer.setSize( w, h - 91 );
+						aspectRatio = w / (h - 91);
+						camera.aspect = aspectRatio;
+						camera.updateProjectionMatrix();
+						mesh.geometry.radius = 500;
+						camera.position.z = 350; //(isPortrait? w/2 : h/2) * camera.aspect;
+						camera.lookAt( scene.position );
+					}
+					animate();
+					// bc I can bitches!
+					socket.on('presenter-update-texture', function(filename){
+						var file = '/img/textures/' + filename;
+						mesh.material = new THREE.MeshBasicMaterial({
+							map: THREE.ImageUtils.loadTexture( file ),
+							overdraw: true
+						});
+					});
+					socket.on('orientGlobe', function(o){
+						if(mesh){
+							mesh.rotation = o.r;
+						}
+					});
+				}
+			);
+		</script>
+	</body>
+</html>

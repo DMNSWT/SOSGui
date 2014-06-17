@@ -1,0 +1,297 @@
+black = #000
+white = #fff
+off-white = #e8e8e8
+orange = #dd4814
+purple = #772953
+
+global-reset()
+
+fitToMargin()
+	position absolute
+	top 0px
+	bottom 0px
+	left 0px
+	right 0px
+
+no-select()
+	-webkit-touch-callout none
+	-webkit-user-select none
+	-khtml-user-select none
+	-moz-user-select none
+	-ms-user-select none
+	user-select none
+
+glass-border = solid 1px rgba(255,255,255,0.05)
+
+html
+body
+	background black
+	margin 0px
+	padding 0px
+	font-family sans-serif
+	overflow hidden
+	*
+		no-select()
+
+a
+	color orange
+	text-decoration none
+
+p
+	margin 10px 0px 5px 0px
+
+strong
+	font-weight 700
+
+.page-ct
+	display none
+	width 100%
+	height 100%
+	absolute top 0px left 0px
+
+#globe-and-media-control
+	display block
+
+#left-nav-panel-target
+	absolute top 0px left -1px
+	background lighten(black, 5%)
+	border-right solid 1px lighten(black, 15%)
+	width 30%
+	height 100%		
+
+#globe-target
+#globe-control-overlay
+	position absolute
+	left 0px
+	right 0px
+	top 0px
+	bottom 0px
+	margin 0px 0px 49px 30%
+
+#n-rot-slider-ct
+	absolute right 10px top 50%
+	height 300px
+	margin-top -150px
+	.slider-knob
+		border-radius 0px
+		border-color transparent
+		background green
+
+#z-rot-slider-ct
+	absolute right 100px bottom 50px
+	width 300px
+	.slider-knob
+		border-radius 0px
+		border-color transparent
+		background green
+
+
+#show-alignment
+	background red
+	color white
+	font-weight bold
+	position absolute
+	top 0px
+	right 0px
+	text-align center
+	width w = 48px
+	height w
+	line-height w
+
+#globe-control-overlay
+	background rgba(0,0,0,0.75)
+	display none
+	.slider-control
+		margin-top -24px
+		position absolute
+		top 50%
+		left 0px
+	.slider-knob
+		background red
+		width 12px
+		border-radius 0px
+		border-color red
+
+footer
+	absolute bottom 0px left 0px
+	width 100%
+	height h = 48px
+	line-height h
+	display block
+
+#footer-placeholder
+	absolute bottom 0px left 0px
+	border-right glass-border
+	height h = 48px
+	width h
+	border-radius top right 4px
+	display none
+
+.btn
+	font-size 36px
+	width 48px
+	height h = 48px
+	line-height h
+	display inline-block
+	color darken(white, 35%)
+	text-shadow 0px 1px 2px black
+	transition all 0.2s
+	text-align center
+	&.btn-slim
+		width 30px
+	&:hover
+		color white
+
+.player-controls
+	.btn
+		font-size 24px
+
+#control-pause
+	display none
+
+.pushed-right
+	absolute top 0px right 0px
+
+.glass
+	background #000
+	border-top glass-border
+	&.full-border
+		border glass-border
+	.glass-blur
+		absolute top 0px left 0px
+		width 100%
+		height 100%
+		background rgba(255,255,255,0.15)
+		z-index -1
+		-webkit-filter blur(5px)
+
+.big-list
+	fitToMargin()
+	margin 32px 0px 49px 0px
+	position absolute
+	overflow hidden
+	overflow-y auto
+	font-size 13px
+	li
+		border-bottom solid 1px lighten(black, 15%)
+		&:first-child
+			border-top solid 1px lighten(black, 15%)
+		&.active
+			border-right solid 5px orange
+			background rgba(255,255,255,0.15)
+		ul
+			display none
+			li:first-child
+				box-shadow inset 0px 8px 6px rgba(0,0,0,0.35)
+			li:last-child
+				border-bottom none 0px
+			li
+				border-left solid 6px black
+		.sub-list
+			li
+				background rgba(0,0,0,0.55) 
+				color darken(#fff, 45%)
+				height 36px
+				font-size 0.9em
+				position relative
+				.layer-label
+					absolute top 5px left 10px
+				.on-off-indicator
+					absolute top 8px right 8px
+					height 20px
+					width 40px
+					border-radius 10px
+					background black
+					cursor pointer
+					&.on
+						background orange
+		a
+			padding 0px 42px 0px 12px
+			display block
+			height 48px
+			clearfix()
+			relative top 0px left 0px
+			img
+				absolute top 6px left 6px
+				height 32px
+				width 32px
+			.indicator
+				font-size 18px
+				line-height 48px
+				width 32px
+				height 32px
+				font-weight 100
+				absolute top 0px right 0px
+				text-shadow 0px 0px 2px black
+			.link-copy
+				display block
+				padding-top 10px
+				strong
+					display block
+				.excerpt
+					display block
+					font-size .8em
+					color darken(white, 35%)
+
+.left-nav-present
+	border-radius 7px
+	absolute bottom 64px left 15px
+	width 35%
+	min-width 300px
+	height 85%
+	background linear-gradient(top, white, off-white)
+	box-shadow 0px 0px 0px 7px rgba(0,0,0,0.35)
+	.lnp-content-ct
+		margin 10px
+		fitToMargin()
+		overflow hidden
+		overflow-y auto
+	.pointer
+		pheight = 8px
+		width 0px
+		height 0px
+		border-style solid
+		absolute bottom (pheight * -1) left 15px
+		border-width pheight pheight 0 pheight
+		border-color off-white transparent transparent transparent
+		transform rotate(360deg)
+
+#notes-ct
+	display none
+	.pointer
+		left 55px
+
+.offset-to-right-side
+	absolute top 0px left 30%
+	width 70%
+
+@import 'ubuntu-slider'
+
+.opac-slider-ct
+	fitToMargin()
+	margin 15px 66px 0px 15px;
+	.slider-control
+		height 20px
+		.slider-bar
+		.slider-highlight
+			margin 9px 1px 0px 1px
+		.slider-knob
+			height w = 12px
+			width 40px
+			top 5px
+			margin-left -20px
+			border-radius 0px
+			border none 0px
+
+#play-scrubber
+	fitToMargin()
+	margin 0px 8px 0px 40px
+
+#ghost-rep
+	display none
+
+#playlist-selector
+	display block
+	width 100%
+	height 32px
+	line-height 32px

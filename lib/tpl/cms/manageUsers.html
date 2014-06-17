@@ -1,0 +1,38 @@
+{% extends 'cms-layout.html' %}
+
+{% block content %}
+<script>
+	function UsersCtrl($scope, $http){
+		$scope.users = new Array();
+		$http({method: 'GET', url: '/api/users'})
+		.success(function(data) {
+			$scope.users = data;
+		}).error(handleError);
+	}
+</script>
+<h1>Users</h1>
+<div class="row" ng-controller="UsersCtrl">
+	<div class="col-sm-7">
+		<div class="table-responsive">
+			<table cellspacing="0" cellpadding="0" class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Email</th>
+						<th>Groups</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="user in users track by $index">
+						<td> {{ user.email }} </td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<form ng-submit="">
+			
+		</form>
+	</div>
+</div>
+{% endblock %}

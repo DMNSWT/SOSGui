@@ -1,0 +1,11 @@
+a{color:#c7a73a}
+header{border-bottom:solid 2px #c7a73a}
+footer a:hover,footer a:active,footer a.current{border-top:solid 4px #c7a73a}
+footer a:hover{-webkit-box-shadow:0 0 13px #c7a73a;box-shadow:0 0 13px #c7a73a}
+#media-controls{border:solid 2px #c7a73a}
+.big-list li ul{border-left:solid 5px #c7a73a}
+.big-list li a{color:#c7a73a;}
+.big-list li a .indicator{color:#c7a73a}
+#media-controls #control-play,#media-controls #control-pause{color:#c7a73a}
+.slider-control .slider-highlight{background:-webkit-gradient(linear, left top, left bottom, color-stop(0, #c7a73a), color-stop(1, #967e2b));background:-webkit-linear-gradient(top, #c7a73a 0%, #967e2b 100%);background:-moz-linear-gradient(top, #c7a73a 0%, #967e2b 100%);background:-o-linear-gradient(top, #c7a73a 0%, #967e2b 100%);background:-ms-linear-gradient(top, #c7a73a 0%, #967e2b 100%);background:linear-gradient(top, #c7a73a 0%, #967e2b 100%);border-color:#dbc67f}
+.slider-control .slider-knob{border:solid 2px #c7a73a;-webkit-box-shadow:0 0 5px #000,inset 0 0 48px #c7a73a;box-shadow:0 0 5px #000,inset 0 0 48px #c7a73a}

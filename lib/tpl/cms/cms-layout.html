@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+	<head>
+		<title>SOS Cotent Management</title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<script src="/js/3p/jquery.min.js"></script>
+		<script src="/js/3p/bootstrap.min.js"></script>
+		<script src="/js/3p/angular.min.js"></script>
+		<script>
+			function handleError(data,status,headers,conf){
+				console.log(data);
+			}
+
+			angular.module('atlas', [])
+			.directive('pager', [function(){
+				return {
+					restrict: 'E',
+					transclude: false,
+					replace: true,
+					template: '<ul class="sangria-pager" ng-if="items.length > pageSize"><li><a href="#" ng-click="gotoPage(1)" ng-class="{disabled: currentPage == 1}"><i class="fa fa-angle-double-left"></i></a></li><li><a href="#" ng-click="prevPage()" ng-class="{disabled: currentPage == 1}"><i class="fa fa-angle-left"></i></a></li><li ng-repeat="n in [] | range:showPages"><a href="#" ng-click="gotoPage(n)" ng-class="{disabled: n == currentPage}">{{n}}</a></li><li><a href="#" ng-click="nextPage()" ng-class="{disabled: currentPage == getPageCount()}"><i class="fa fa-angle-right"></i></a></li><li><a href="#" ng-click="gotoPage(getPageCount())" ng-class="{disabled: currentPage == getPageCount()}"><i class="fa fa-angle-double-right"></i></a></li></ul>',
+					scope:{
+						items      : '=?items',
+						pageSize   : '=?pageSize',
+						currentPage: '=?page',
+						showPages  : '=?showPages'
+					},
+					controller: function($scope){
+						$scope.getPagesRange = function(){
+							var minPage = Math.max(1, $scope.currentPage - Math.floor( ($scope.showPages - 1)/2 )),
+								maxPage = Math.min($scope.getPageCount(), minPage + $scope.showPages)
+						}
+						$scope.getPageCount = function(){
+							return Math.ceil( $scope.items.length / $scope.pageSize );
+						}
+						$scope.gotoPage = function(n){
+							console.log('goto', n);
+							$scope.currentPage = Math.max(1, Math.min($scope.getPageCount(), n));
+						}
+						$scope.nextPage = function(){
+							$scope.gotoPage( $scope.currentPage + 1 );
+						}
+						$scope.prevPage = function(){
+							$scope.gotoPage( $scope.currentPage - 1 );
+						}
+					},
+					link: function(scope, el, attr, ctrl){
+						scope.pageSize    = parseInt(scope.pageSize) || 10;
+						scope.currentPage = parseInt(scope.currentPage) || 1;
+						scope.showPages = parseInt(scope.showPages) || 5;
+
+						scope.$watch('currentPage', function(newVal, oldVal){
+							scope.$emit('pager.pageChanged', newVal, oldVal);
+						});
+					}
+				}
+			}])
+			.directive('grid',  ['$filter', '$templateCache', function($filter, $templateCache){
+				return {
+					restrict: 'E',
+					transclude: false,
+					replace: true,
+					scope:{
+						gridData: '=?gridData'
+					},
+					template: '<table class="table table-bordered"><thead><tr><th ng-repeat="col in gridData.cols"><div class="th-inner"><span ng-click="toggleSort(col)">{{col.name}}</span><div ng-if="col.sortable"><i class="fa fa-chevron-up grid-header-tool" ng-if="col.sorted == \'asc\' || !col.sorted" ng-click="sortBy(col, \'desc\')"></i><i class="fa fa-chevron-down grid-header-tool" ng-if="col.sorted == \'desc\'" ng-click="sortBy(col, \'asc\')"></i></div></div></th></tr></thead><tbody><tr ng-repeat="row in inRangeData()" class="{{row.__classes}}" ng-click="selectRow(row)"><td ng-repeat="col in gridData.cols"><input ng-if="getColType(col) == \'boolean\'" type="checkbox"  ng-model="row[col.property]" /><span  ng-if="getColType(col) == \'date\'">{{ formattedVal(row, col) }}</span><span  ng-if="getColType(col) == \'text\'">{{ formattedVal(row, col) }}</span><div   ng-if="getColType(col) == \'template\'" ng-include="colTemplates[$index]"></div></td></tr></tbody><tfoot><tr><td colspan="{{gridData.cols.length}}"><pager items="gridData.rows" page-size="limit"></pager></td></tr></tfoot></table>',
+					controller: function($scope){
+						$scope.limit = 25;
+						$scope.skip = 0;
+
+						$scope.$on('pager.pageChanged', function(evt, newVal, oldVal){
+							if(newVal !== oldVal){
+								$scope.skip = $scope.limit * (newVal - 1);
+							}
+						});
+
+						$scope.selectRow = function(row){
+							$scope.$emit('rowSelected', row);
+						}
+
+						$scope.formattedVal = function(row, col){
+							var valOut = '';
+							if(col.property instanceof Function){
+								valOut = col.property(row);
+							}
+							else{
+								valOut = row[col.property];
+							}
+							if(col.formatter){
+								valOut = col.formatter(valOut);
+							}
+							else if(col.type == 'date'){
+								valOut = $filter('date')(new Date(valOut), 'shortDate');
+							}
+							return valOut;
+						}
+						$scope.getColType = function(col){
+							return col.type || 'text';
+						}
+						$scope.toggleSort = function(col){
+							if(!col.sortable){ return; }
+							var dir = col.sorted == 'desc'? 'asc' : 'desc';
+							$scope.sortBy(col, dir);
+						}
+						$scope.sortBy = function(col, dir){
+							var prop = col.property;
+							col.sorted = dir;
+							$scope.gridData.rows.sort(function(a,b){
+								var aComp, bComp;
+								if(col.type == 'boolean'){
+									aComp = a[prop]? 1 : 0;
+									bComp = b[prop]? 1 : 0;
+								}
+								else if(col.type == 'date'){
+									aComp = new Date(a[prop]).getTime();
+									bComp = new Date(b[prop]).getTime();
+								}
+								else{
+									aComp = a[prop].toLowerCase(),
+									bComp = b[prop].toLowerCase();
+								}
+								if(aComp > bComp){
+									return dir == 'desc'? -1 : 1;
+								}
+								if(aComp < bComp){
+									return dir == 'desc'? 1 : -1;
+								}
+								return 0;
+							});
+						}
+						$scope.inRangeData = function(){
+							return $scope.gridData.rows.slice($scope.skip, $scope.skip + $scope.limit)
+						}
+					},
+					link: function(scope, el, attr){
+						// setup, in case anything needs initing
+						scope.templateIndex = 0;
+						scope.colTemplates = [];
+						scope.$watch('gridData.cols', function(newCols, oldCols){
+							for (var i = 0, l = newCols.length; i < l; i++){
+								var col = newCols[i];
+								// adjust templates if neccessary
+								if(col.template && col.type == 'template'){
+									var tid = col.name + (scope.templateIndex++) + '.html';
+									$templateCache.put(tid, col.template);
+									scope.colTemplates[i] = tid;
+								}
+								else if(col.type == 'template' && col.templateId){
+									scope.colTemplates[i] = col.templateId;
+								}
+							}
+						}, true)
+					}
+				}
+			}])
+			.controller('AppCtrl', ['$scope', function($scope){
+				$scope.loc = window.location.pathname;
+				console.log($scope.loc)
+			}]);
+		</script>
+		<style>
+			.panel-padding{
+				padding: 15px;
+			}
+		</style>
+	</head>
+	<body ng-app="atlas" ng-controller="AppCtrl">
+
+		{% include "./top-nav.html" %}
+
+		<div class="container">
+			{% block content %}
+			{% endblock %}
+		</div>
+	</body>
+</html>

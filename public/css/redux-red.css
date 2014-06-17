@@ -1,0 +1,11 @@
+a{color:#c82026}
+header{border-bottom:solid 2px #c82026}
+footer a:hover,footer a:active,footer a.current{border-top:solid 4px #c82026}
+footer a:hover{-webkit-box-shadow:0 0 13px #c82026;box-shadow:0 0 13px #c82026}
+#media-controls{border:solid 2px #c82026}
+.big-list li ul{border-left:solid 5px #c82026}
+.big-list li a{color:#c82026;}
+.big-list li a .indicator{color:#c82026}
+#media-controls #control-play,#media-controls #control-pause{color:#c82026}
+.slider-control .slider-highlight{background:-webkit-gradient(linear, left top, left bottom, color-stop(0, #c82026), color-stop(1, #96181d));background:-webkit-linear-gradient(top, #c82026 0%, #96181d 100%);background:-moz-linear-gradient(top, #c82026 0%, #96181d 100%);background:-o-linear-gradient(top, #c82026 0%, #96181d 100%);background:-ms-linear-gradient(top, #c82026 0%, #96181d 100%);background:linear-gradient(top, #c82026 0%, #96181d 100%);border-color:#e66368}
+.slider-control .slider-knob{border:solid 2px #c82026;-webkit-box-shadow:0 0 5px #000,inset 0 0 48px #c82026;box-shadow:0 0 5px #000,inset 0 0 48px #c82026}
