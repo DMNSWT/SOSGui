@@ -45,6 +45,10 @@ NOTE:
 - "playlistFsLocation" location can be different.  You should manually make this directory location.
 - "fsLocation" location can be different.  You should manually make this directory location.
 
-After that run:
+After that run at the command-line (as SOS):
 
     node index.js
+
+To access, use any browser (tested with Chrome):    
+Presenter GUI: http://<sos-computer>:3500
+CMS GUI: http://<sos-computer>:3510
