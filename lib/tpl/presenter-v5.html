@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Science on a Sphere - Presenter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, width=device-width, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="/css/v5.css"/>
+    <script src="/js/vendor/head.min.js"></script>
+    <script>
+      head.feature('webgl', (function(){try{return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');}catch(e){return false;}})());
+    </script>
+  </head>
+  <body>
+
+    <div id="left-bar" ng-controller="LeftList">
+      <br/><br/>
+      <br/><br/>
+      <br/><br/>
+      {{cost}}
+      <slider floor="0" ceiling="100" step="1" precision="2" ng-model="cost"></slider>
+    </div>
+    <globe-control></globe-control>
+    <div id="media-bar"></div>
+    <script>
+      head.load([
+        { jQuery2: '/js/vendor/jquery-2.1.1.min.js' },
+        { angular: '/js/vendor/angular.min.js' },
+        { angularSlider: '/js/vendor/angular-slider.js' },
+        { socketIO: '/socket.io/socket.io.js' },
+        { app: '/js/v5App.js' }
+        ], function(){
+          angular.bootstrap(document, ['sosv5']);
+      });
+    </script>
+  </body>
+</html>
