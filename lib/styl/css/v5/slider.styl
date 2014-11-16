@@ -47,3 +47,15 @@ slider
         background rgba(blue, 0.25)
     &.bubble
       display none
+  &[disabled] span
+    &.pointer
+      cursor not-allowed
+      &:hover
+      &.active
+        background rgba(#777, 0.15)
+    &.pointer:after
+    &.bar
+      background #777
+
+.vertical
+  //transform rotate(-90deg)

@@ -89,6 +89,7 @@
         ceiling: '@',
         step: '@',
         precision: '@',
+        vertical: '@',
         ngModel: '=?',
         ngModelLow: '=?',
         ngModelHigh: '=?',
@@ -288,7 +289,9 @@
                   dimensions();
                   event.stopPropagation();
                   event.preventDefault();
-                  ngDocument.bind(events.move, onMove);
+                  if(!pointer.parents('slider').is('[disabled="disabled"]')){
+                    ngDocument.bind(events.move, onMove);
+                  }
                   return ngDocument.bind(events.end, onEnd);
                 };
                 return pointer.bind(events.start, onStart);

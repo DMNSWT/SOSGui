@@ -5,3 +5,60 @@
   border-right solid 1px border-color
   absolute top 0px left 0px
   z-index 2
+
+  li-height = 50px
+
+  ul
+    overflow-x hidden
+    overflow-y auto
+    position absolute
+    top 0px
+    bottom 0px
+    left 0px
+    right 0px
+    margin li-height 0px
+    padding 0px
+    li
+      min-height li-height
+      line-height li-height
+      border-bottom solid 1px border-color
+      padding 0px 10px 0px 15px
+      font-weight bold
+      > ul
+        position static
+        margin 0px -10px 0px -15px
+        border-top solid 1px border-color
+        li
+          border-left solid 10px blue
+          padding 0px
+          line-height 20px
+          position relative
+          background rgba(255,255,255,0.05)
+          .layer-label
+            font-size 13px
+            font-weight normal
+          .toggle-switch
+            absolute top 10px right 10px
+          div.label-and-slider
+            margin 0px 80px 0px 10px
+          slider
+            margin-top 3px
+          &:last-child
+            border-bottom none
+
+  #tools
+    background light-gray
+    height media-bar-height
+    width 100%
+    absolute bottom 0px left 0px
+
+  #playlistSelector
+    width 100%
+    height li-height
+    line-height li-height
+    font-size 20px
+    background url('/img/interface/select-arrow.png') light-gray no-repeat bottom right
+    color dark-gray
+    border none
+    appearance none
+    border-radius 0px

@@ -1,0 +1,9 @@
+<div>
+  <div class="play-pause">
+    <img width="48" src="/img/interface/play.png" ng-show="paused"/>
+    <img width="48" src="/img/interface/pause.png" ng-show="!paused"/>
+  </div>
+  <div class="slider-ct">
+    <slider floor="0" ceiling="100" step="0.25" precision="2" ng-model="playheadLocation"></slider>
+  </div>
+</div>

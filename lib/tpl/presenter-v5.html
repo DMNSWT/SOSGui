@@ -14,18 +14,29 @@
   <body>
 
     <div id="left-bar" ng-controller="LeftList">
-      <br/><br/>
-      <br/><br/>
-      <br/><br/>
-      {{cost}}
-      <slider floor="0" ceiling="100" step="1" precision="2" ng-model="cost"></slider>
+      <select id="playlistSelector" ng-model="selectedPlaylist">
+        <option ng-repeat="item in availablePlaylists" value="{{ item.id }}">{{ item.name }}</option>
+      </select>
+      <ul>
+        <li ng-click="showChildren = !showChildren" class="playlist-item" ng-repeat="item in currentPlaylistItems">
+          {{item.title}}
+          <ul ng-hide="!showChildren">
+            <li ng-repeat="layer in item.children">
+              <!-- this is because the tansclusion scope breaks the slider for some reason -->
+              <ng-include src="'/tpl/layer-item.html'"></ng-include>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <div id="tools"></div>
     </div>
     <globe-control></globe-control>
-    <div id="media-bar"></div>
+    <media-control></media-control>
     <script>
       head.load([
         { jQuery2: '/js/vendor/jquery-2.1.1.min.js' },
         { angular: '/js/vendor/angular.min.js' },
+        { angularToggleSwitch: '/js/vendor/angular-toggle-switch.js' },
         { angularSlider: '/js/vendor/angular-slider.js' },
         { socketIO: '/socket.io/socket.io.js' },
         { app: '/js/v5App.js' }

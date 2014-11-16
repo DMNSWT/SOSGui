@@ -1,8 +1,69 @@
-angular.module('sosv5', ['uiSlider'])
+angular.module('sosv5', ['uiSlider', 'toggle-switch'])
   .value('socket', io.connect())
-  .controller('LeftList', ['$scope', function($scope){
+  .controller('LeftList', ['$scope', '$http', function($scope, $http){
     $scope.availablePlaylists = new Array();
+    $scope.currentPlaylistItems = new Array();
+    $http.get('/playlists').success(function(data){
+      for(var i=0, l=data.length; i<l; i++){
+        var item = data[i];
+        var itemArr = item.split('/'),
+          name = itemArr[itemArr.length - 1];
+        $scope.availablePlaylists.push({name: name, id: item});
+      }
+    });
+    $http.get('/get-playlist-items').success(function(data){
+      for(var i=0, l=data.length; i<l; i++){
+        $scope.currentPlaylistItems.push( data[i] );
+      }
+    });
   }])
+  .directive('playlistItem', function(){
+    return{
+      restrict: 'C',
+      scope: true,
+      controller: ['$scope', '$timeout', function($scope, $timeout){
+        $scope.showChildren = true;
+        $timeout(function(){
+          $scope.showChildren = false;
+        }, 1000)
+      }]
+    }
+  })
+  .directive('layerItem', function(){
+    return{
+      restrict: 'C',
+      scope: true,
+      link: function(scope, el){
+        el.on('click', function(event){
+          event.stopPropagation();
+        });
+      },
+      controller: ['$scope', function($scope){
+        $scope.opacity = 100;
+        $scope.layerOn = true;
+        $scope.layerIndex = 0;
+        $scope.$watch('layerOn', function(v){
+
+        });
+        $scope.$watch('opacity', function(v){
+
+        });
+      }]
+    }
+  })
+  .directive('mediaControl', function(){
+    return{
+      restrict: 'E',
+      controller: ['$scope', 'socket',  function($scope, socket){
+        $scope.playheadLocation = 25.5;
+        $scope.paused = true;
+        socket.on('playhead-update', function(percent){
+          playheadLocation = percent;
+        });
+      }],
+      templateUrl: '/tpl/media-control.html'
+    }
+  })
   .directive('globeControl', function(){
     function getNativeEvent(event){ while(event && typeof event.originalEvent !== "undefined"){ event = event.originalEvent; } return event; }
     function deg2rad(d){ return d*(Math.PI/180); }
