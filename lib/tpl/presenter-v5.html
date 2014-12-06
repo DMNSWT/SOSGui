@@ -18,8 +18,12 @@
         <option ng-repeat="item in availablePlaylists" value="{{ item.id }}">{{ item.name }}</option>
       </select>
       <ul>
-        <li ng-click="showChildren = !showChildren" class="playlist-item" ng-repeat="item in currentPlaylistItems">
+        <li ng-click="playThisItem(item.id)" class="playlist-item" ng-repeat="item in currentPlaylistItems">
           {{item.title}}
+          <div class="playlist-item-button" ng-click="showChildren = !showChildren">
+            <span ng-hide="showChildren">+</span>
+            <span ng-hide="!showChildren">-</span>
+          </div>
           <ul ng-hide="!showChildren">
             <li ng-repeat="layer in item.children">
               <!-- this is because the tansclusion scope breaks the slider for some reason -->
@@ -28,7 +32,16 @@
           </ul>
         </li>
       </ul>
-      <div id="tools"></div>
+      <div id="tools" style="color: #000;" ng-init="test = 'on'">
+        <div class="tool-icon" ng-click="emailPageLink()">
+          <img src="/img/interface/email.png" alt="email" />
+          <span data-i18n="Email" ></span>
+        </div>
+        <div class="tool-icon" ng-click="gotoPage()">
+          <img src="/img/interface/share.png" alt="link" />
+          <span data-i18n="Link" ></span>
+        </div>
+      </div>
     </div>
     <globe-control></globe-control>
     <media-control></media-control>
@@ -36,6 +49,7 @@
       head.load([
         { jQuery2: '/js/vendor/jquery-2.1.1.min.js' },
         { angular: '/js/vendor/angular.min.js' },
+        { angularLocalization: '/js/vendor/angular-localization.js'},
         { angularToggleSwitch: '/js/vendor/angular-toggle-switch.js' },
         { angularSlider: '/js/vendor/angular-slider.js' },
         { socketIO: '/socket.io/socket.io.js' },

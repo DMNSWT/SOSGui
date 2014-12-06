@@ -254,6 +254,7 @@
 
                 onEnd = function() {
                   pointer.removeClass('active');
+                  scope.$emit('slider-end');
                   ngDocument.unbind(events.move);
                   return ngDocument.unbind(events.end);
                 };
@@ -282,6 +283,7 @@
                   }
                   newValue = roundStep(newValue, parseInt(scope.precision), parseFloat(scope.step), parseFloat(scope.floor));
                   scope[ref] = newValue;
+                  scope.$emit('slider-move');
                   return scope.$apply();
                 };
                 onStart = function(event) {
@@ -292,6 +294,7 @@
                   if(!pointer.parents('slider').is('[disabled="disabled"]')){
                     ngDocument.bind(events.move, onMove);
                   }
+                  scope.$emit('slider-start');
                   return ngDocument.bind(events.end, onEnd);
                 };
                 return pointer.bind(events.start, onStart);

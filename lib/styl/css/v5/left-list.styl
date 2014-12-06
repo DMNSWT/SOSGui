@@ -22,14 +22,29 @@
       min-height li-height
       line-height li-height
       border-bottom solid 1px border-color
-      padding 0px 10px 0px 15px
+      padding 0px 45px 0px 15px
       font-weight bold
+      position relative
+      white-space nowrap
+      text-overflow ellipsis
+      .playlist-item-button
+        background light-gray
+        border-radius 4px
+        width btnw = li-height - 30
+        height btnw
+        line-height btnw - 2
+        color dark-gray
+        font-weight bold
+        text-align center
+        font-size 1.5em
+        absolute top 15px right 15px
+        cursor pointer
       > ul
         position static
-        margin 0px -10px 0px -15px
+        margin 0px -45px 0px -15px
         border-top solid 1px border-color
         li
-          border-left solid 10px blue
+          border-left solid 6px blue
           padding 0px
           line-height 20px
           position relative
@@ -51,6 +66,17 @@
     height media-bar-height
     width 100%
     absolute bottom 0px left 0px
+    .tool-icon
+      width 25%
+      float left
+      text-align center
+      color black
+      padding 5px 0px 0px 0px
+      cursor pointer
+      img
+        height 20px
+        margin 0px auto
+        display block
 
   #playlistSelector
     width 100%

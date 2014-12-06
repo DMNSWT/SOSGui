@@ -1,8 +1,10 @@
-angular.module('sosv5', ['uiSlider', 'toggle-switch'])
+angular.module('sosv5', ['localization', 'uiSlider', 'toggle-switch'])
   .value('socket', io.connect())
-  .controller('LeftList', ['$scope', '$http', function($scope, $http){
+  .controller('LeftList', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
+    $rootScope.currentlyPlaying = false;
     $scope.availablePlaylists = new Array();
     $scope.currentPlaylistItems = new Array();
+
     $http.get('/playlists').success(function(data){
       for(var i=0, l=data.length; i<l; i++){
         var item = data[i];
@@ -15,17 +17,55 @@ angular.module('sosv5', ['uiSlider', 'toggle-switch'])
       for(var i=0, l=data.length; i<l; i++){
         $scope.currentPlaylistItems.push( data[i] );
       }
+      $rootScope.currentPlaylistItems = $scope.currentPlaylistItems;
     });
+
+    $scope.gotoPage = function(){
+      var url = $rootScope.currentlyPlaying? $rootScope.currentlyPlaying.catalogURL : '';
+      if(url === ''){
+        return false;
+      }
+      window.open(url);
+    }
+
+    $scope.emailPageLink = function(){
+      var title = $rootScope.currentlyPlaying? $rootScope.currentlyPlaying.title : '',
+        id = $rootScope.currentlyPlaying? $rootScope.currentlyPlaying.id : '';
+      if(title === '' || id === ''){
+        return false;
+      }
+      var email = prompt('Link for "' + title + '" Email address to send to:');
+      $http.get('/mail-link/' + email + '/' + id);
+    }
   }])
   .directive('playlistItem', function(){
     return{
       restrict: 'C',
       scope: true,
-      controller: ['$scope', '$timeout', function($scope, $timeout){
+      link: function(scope, el){
+        // prevents play on opening layers list
+        el.find('.playlist-item-button').on('click', function(event){
+          event.stopPropagation();
+        });
+      },
+      controller: ['$scope', '$timeout', '$filter', '$rootScope', function($scope, $timeout, $filter, $rootScope){
         $scope.showChildren = true;
         $timeout(function(){
           $scope.showChildren = false;
-        }, 1000)
+        }, 1500);
+
+        $scope.playThisItem = function(id){
+          console.log('playing item', id);
+          var playables = $filter('filter')($rootScope.currentPlaylistItems, function(item){
+              return item.id === id;
+            }
+          );
+          var playable = false;
+          if(playables.length > 0){
+            playable = playables[0];
+          }
+          $rootScope.currentlyPlaying = playable;
+        }
       }]
     }
   })
@@ -34,6 +74,7 @@ angular.module('sosv5', ['uiSlider', 'toggle-switch'])
       restrict: 'C',
       scope: true,
       link: function(scope, el){
+        // prevents play on doing things in a layer
         el.on('click', function(event){
           event.stopPropagation();
         });
@@ -43,10 +84,10 @@ angular.module('sosv5', ['uiSlider', 'toggle-switch'])
         $scope.layerOn = true;
         $scope.layerIndex = 0;
         $scope.$watch('layerOn', function(v){
-
+          console.log($scope.layerIndex, v? 'on' : 'off');
         });
         $scope.$watch('opacity', function(v){
-
+          console.log($scope.layerIndex, v);
         });
       }]
     }
@@ -55,10 +96,28 @@ angular.module('sosv5', ['uiSlider', 'toggle-switch'])
     return{
       restrict: 'E',
       controller: ['$scope', 'socket',  function($scope, socket){
-        $scope.playheadLocation = 25.5;
+        $scope.playheadLocation = 0;
         $scope.paused = true;
+        $scope.ignoreServerUpdate = false;
         socket.on('playhead-update', function(percent){
-          playheadLocation = percent;
+          if(!$scope.ignoreServerUpdate){
+            $scope.playheadLocation = percent;
+          }
+        });
+        $scope.togglePaused = function(){
+          $scope.paused = !$scope.paused;
+        }
+        $scope.$watch('paused', function(){
+          // send play or pause command here
+        });
+        $scope.$on('slider-start', function(){
+          $scope.ignoreServerUpdate = true;
+        });
+        $scope.$on('slider-end', function(){
+          $scope.ignoreServerUpdate = false;
+        });
+        $scope.$on('slider-move', function(){
+          // send playhead update
         });
       }],
       templateUrl: '/tpl/media-control.html'
