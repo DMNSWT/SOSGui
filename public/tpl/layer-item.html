@@ -1,0 +1,10 @@
+<div class="layer-item" ng-init="layerIndex = $index">
+  <div class="label-and-slider">
+    <span class="layer-label">
+      {{ layer }}
+    </span><br/>
+    <slider floor="0" ceiling="100" step="1" precision="2" ng-model="opacity" ng-disabled="!layerOn"></slider>
+  </div>
+  <toggle-switch ng-model="layerOn" on-label="{{'on' | i18n}}" off-label="{{'off' | i18n}}"></toggle-switch>
+
+</div>

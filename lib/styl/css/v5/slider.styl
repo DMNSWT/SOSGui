@@ -1,0 +1,61 @@
+slider
+  w = 15px
+  bw = 10px
+  bheight = 6px
+  vmar = ((bw + w) - bheight) / 2
+  display inline-block
+  position relative
+  height bheight
+  width 100%
+  margin vmar 0px
+  vertical-align middle
+  span
+    white-space nowrap
+    position absolute
+    display inline-block
+    &.base
+      width 100%
+      height 100%
+      padding 0
+    &.bar
+      width 100%
+      height 100%
+      z-index 0
+      background blue
+      &.selection
+        width 0%
+        z-index 1
+    &.pointer
+      cursor pointer
+      width w + bw*2
+      height w + bw*2
+      top (-1 * bw) + (-1 * w/2) + (bheight / 2)
+      z-index 2
+      border-radius (w/2 + bw)
+      background rgba(blue, 0)
+      &:after
+        content ''
+        width w
+        height w
+        border-radius (w/2)
+        absolute top bw left bw
+        background blue
+        box-shadow 0px 0px 3px rgba(0,0,0,0.15)
+      &:hover
+        background rgba(blue, 0.15)
+      &.active
+        background rgba(blue, 0.25)
+    &.bubble
+      display none
+  &[disabled] span
+    &.pointer
+      cursor not-allowed
+      &:hover
+      &.active
+        background rgba(#777, 0.15)
+    &.pointer:after
+    &.bar
+      background #777
+
+.vertical
+  //transform rotate(-90deg)

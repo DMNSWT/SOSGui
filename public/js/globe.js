@@ -19,7 +19,7 @@ $(function(){
 		alignVal = ((pct/100)*360) - 180;
 		socket.emit('passthrough', 'pointer on');
 		socket.emit('passthrough', 'pointer red');
-		socket.emit('passthrough', 'pointer 0,'+alignVal);		
+		socket.emit('passthrough', 'pointer 0,'+alignVal);
 		// do something with offset value
 	}).on('dragEnded', function(){
 		socket.emit('passthrough', 'pointer off');
@@ -58,7 +58,7 @@ $(function(){
 		camera      = new THREE.PerspectiveCamera( 60, aspectRatio, 1, 10000 ),
 		projector   = new THREE.Projector(),
 		raycaster   = new THREE.Raycaster,
-		renderer    = new THREE.CanvasRenderer({antialias: true}),
+		renderer    = new THREE.CanvasRenderer({antialias: true, alpha: true}),
 		sphereSegs  = 8,
 		light,
 		controls,
@@ -66,7 +66,7 @@ $(function(){
 	var ghostRep = $('#ghost-rep');
 	var mouse = {x:0,y:0};
 	if(head.webgl){
-		renderer    = new THREE.WebGLRenderer({antialias: true});
+		renderer    = new THREE.WebGLRenderer({antialias: true, alpha: true});
 		sphereSegs  = 16;
 	}
 	camera.position.z = 450;
@@ -189,7 +189,7 @@ $(function(){
 				normd = (50 - pct) * -2;
 			}
 			globeRotationPerTick = (normd/100) * 0.05;
-		} 
+		}
 	});
 	$('#z-rot-slider-ct *').on('mousedown', function(evt){
 		if(!$('#z-rot-slider').data('inDrag')){
